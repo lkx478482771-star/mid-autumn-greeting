@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#e6dcc6">
+    <meta
+      name="description"
+      content="中秋到了，给惦记的人留几句话，也把你的祝福挂到月亮下面。"
+    >
+    <meta property="og:title" content="今晚月亮很好">
+    <meta
+      property="og:description"
+      content="不能一起吃月饼，就先看同一个月亮吧。"
+    >
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="assets/moon-photo.webp">
+    <title>今晚月亮很好</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#letters">跳到后面几句话</a>
+
+    <header class="topbar">
+      <a class="seal" href="#top" aria-label="回到页面顶部">中秋</a>
+      <div class="top-actions">
+        <a class="quiet-link" href="#blessing-wall">留一句祝福</a>
+        <button
+          class="icon-button"
+          id="soundToggle"
+          type="button"
+          aria-pressed="true"
+          aria-label="关闭音效"
+          title="关闭音效"
+        >
+          <svg
+            data-sound-icon="on"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M11 5 6 9H2v6h4l5 4V5Z"></path>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M18.36 5.64a9 9 0 0 1 0 12.72"></path>
+          </svg>
+          <svg
+            data-sound-icon="off"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            hidden
+          >
+            <path d="M11 5 6 9H2v6h4l5 4V5Z"></path>
+            <path d="m22 9-6 6"></path>
+            <path d="m16 9 6 6"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="top" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">丙午年 · 八月十五</p>
+          <h1 id="page-title">
+            <span>今晚</span>
+            <span>月亮很好</span>
+          </h1>
+          <p class="lede">
+            <span>中秋到了，给惦记的人发个消息吧。</span>
+            <span>不必写得太满，告诉对方：</span>
+            <span>我这边月色很好，也希望你一切都好。</span>
+          </p>
+
+          <div class="hero-actions">
+            <button class="primary-button" id="blessingTrigger" type="button">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9L12 3Z"></path>
+                <path d="M5 3v4"></path>
+                <path d="M3 5h4"></path>
+              </svg>
+              <span>换一句祝福</span>
+            </button>
+          </div>
+
+          <div class="blessing-note">
+            <span class="note-label">这一句</span>
+            <p id="currentBlessing" aria-live="polite">
+              不能一起吃月饼，就先看同一个月亮吧。
+            </p>
+          </div>
+        </div>
+
+        <figure class="photo-mount">
+          <button
+            class="moon-photo-button"
+            id="moonTrigger"
+            type="button"
+            aria-label="换一句祝福"
+            title="换一句祝福"
+          >
+            <img
+              src="assets/moon-photo.webp"
+              width="1600"
+              height="1600"
+              alt="一轮清晰的中秋满月"
+            >
+          </button>
+          <figcaption>
+            月面摄影：Gregory H. Revera · CC BY-SA 3.0
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="letters" id="letters" aria-labelledby="letters-title">
+        <div class="letters-inner">
+          <header class="letters-heading">
+            <p class="section-kicker">今晚，想说的话</p>
+            <h2 id="letters-title">
+              月亮只有一轮，<br>
+              惦记的人可以有很多。
+            </h2>
+          </header>
+
+          <div class="letters-layout">
+            <div class="letter-list">
+              <article class="letter-note">
+                <h3>给家里</h3>
+                <p>饭要热，灯要亮。忙完就早点回家，或者至少打个电话。</p>
+              </article>
+              <article class="letter-note">
+                <h3>给朋友</h3>
+                <p>不常见也没关系。看到月亮的时候，记得有人一直希望你过得好。</p>
+              </article>
+              <article class="letter-note">
+                <h3>给自己</h3>
+                <p>别总急着赶路。慢一点，也会到达；先照顾好今天，再期待明天。</p>
+              </article>
+            </div>
+
+            <figure class="painting-figure">
+              <img
+                src="assets/moon-painting.webp"
+                width="1800"
+                height="1620"
+                alt="南宋佚名《松阴玩月图》"
+              >
+              <figcaption>
+                南宋 佚名《松阴玩月图》<br>
+                大都会艺术博物馆公开图像 · CC0
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="farewell">
+            <p>
+              不必把祝福写得太满。<br>
+              记得抬头看看，也记得有人惦记你。
+            </p>
+            <button class="share-button" id="shareButton" type="button">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <path d="m8.59 13.51 6.83 3.98"></path>
+                <path d="m15.41 6.51-6.82 3.98"></path>
+              </svg>
+              <span>发给惦记的人</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="blessing-wall"
+        id="blessing-wall"
+        aria-labelledby="blessing-wall-title"
+      >
+        <div class="wall-inner">
+          <header class="wall-heading">
+            <p class="section-kicker">写下一句</p>
+            <h2 id="blessing-wall-title">把你的祝福，也挂到月亮下面。</h2>
+            <p>
+              不用写得多漂亮。一句想说的话、一个名字，或者不留名字都可以。
+            </p>
+          </header>
+
+          <div class="wall-layout">
+            <form class="blessing-form" id="blessingForm">
+              <label class="field">
+                <span>怎么称呼你</span>
+                <input
+                  id="blessingName"
+                  name="nickname"
+                  type="text"
+                  maxlength="20"
+                  autocomplete="nickname"
+                  placeholder="不写也可以"
+                >
+              </label>
+
+              <label class="field">
+                <span>想说的话</span>
+                <textarea
+                  id="blessingMessage"
+                  name="message"
+                  rows="5"
+                  minlength="2"
+                  maxlength="160"
+                  required
+                  placeholder="例如：不能一起吃月饼，就先看同一个月亮吧。"
+                ></textarea>
+                <small>
+                  <span id="blessingCount">0 / 160</span>
+                  <span>最多写一小段</span>
+                </small>
+              </label>
+
+              <label class="honeypot" aria-hidden="true">
+                网站
+                <input
+                  name="website"
+                  type="text"
+                  tabindex="-1"
+                  autocomplete="off"
+                >
+              </label>
+
+              <div class="form-actions">
+                <button class="primary-button" id="blessingSubmit" type="submit">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"></path>
+                    <path d="M8 10h.01"></path>
+                    <path d="M12 10h.01"></path>
+                    <path d="M16 10h.01"></path>
+                  </svg>
+                  <span>挂上这句祝福</span>
+                </button>
+                <p class="form-status" id="blessingFormStatus" aria-live="polite"></p>
+              </div>
+            </form>
+
+            <div class="wall-list-panel">
+              <div class="wall-list-heading">
+                <div>
+                  <h3>朋友们写下的</h3>
+                  <p id="blessingConnection" aria-live="polite">正在看看月亮下面有什么…</p>
+                </div>
+                <button
+                  class="refresh-button"
+                  id="refreshBlessings"
+                  type="button"
+                  aria-label="刷新祝福"
+                  title="刷新祝福"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+                    <path d="M21 3v6h-6"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="blessing-list" id="blessingList" aria-live="polite">
+                <p class="blessing-empty">正在把大家的祝福挂上来…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>中秋佳节 · 敬祝</p>
+      <p class="credits">
+        暮色湖景：W.carter · CC0。页面素材均已本地保存，不依赖外部资源。
+      </p>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
