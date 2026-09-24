@@ -35,10 +35,12 @@ let audioContext = null;
 let toastTimer = null;
 let visibleBlessings = [];
 let blessingsLoading = false;
+let blessingRetryTimer = null;
 
 const LOCAL_BLESSINGS_KEY = "midAutumnBlessingsV1";
 const LOCAL_VISITOR_KEY = "midAutumnVisitorV1";
 const LOCAL_SUBMIT_KEY = "midAutumnLastSubmitV1";
+const REMOTE_BLESSINGS_CACHE_KEY = "midAutumnBlessingsRemoteCacheV1";
 
 function createUuid() {
   if (window.crypto?.randomUUID) {
@@ -83,6 +85,23 @@ function saveLocalBlessing(entry) {
     window.localStorage.setItem(LOCAL_BLESSINGS_KEY, JSON.stringify(next));
   } catch {
     // The submitted card is still shown for this page view if storage is unavailable.
+  }
+}
+
+function cacheRemoteBlessings(entries) {
+  try {
+    window.localStorage.setItem(REMOTE_BLESSINGS_CACHE_KEY, JSON.stringify(entries.slice(0, 40)));
+  } catch {
+    // Caching is best-effort when storage is unavailable.
+  }
+}
+
+function getCachedRemoteBlessings() {
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(REMOTE_BLESSINGS_CACHE_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
   }
 }
 
@@ -189,7 +208,7 @@ function createRequestTimeout(milliseconds) {
   };
 }
 
-async function readSharedBlessings() {
+async function readSharedBlessings(attempt = 1) {
   const endpoint = new URL(
     `/rest/v1/${encodeURIComponent(sharedConfig.blessingsTable)}`,
     sharedConfig.supabaseUrl
@@ -199,15 +218,25 @@ async function readSharedBlessings() {
   endpoint.searchParams.set("order", "created_at.desc");
   endpoint.searchParams.set("limit", "40");
 
-  const request = createRequestTimeout(6_000);
-  const response = await fetch(endpoint, {
-    headers: blessingHeaders(),
-    signal: request.signal
-  }).finally(request.clear);
-  if (!response.ok) {
-    throw new Error(`Blessing read failed: ${response.status}`);
+  const request = createRequestTimeout(18_000);
+  try {
+    const response = await fetch(endpoint, {
+      headers: blessingHeaders(),
+      credentials: "omit",
+      signal: request.signal
+    }).finally(request.clear);
+    if (!response.ok) {
+      throw new Error(`Blessing read failed: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    request.clear();
+    if (attempt < 3) {
+      await new Promise((resolve) => window.setTimeout(resolve, 650 * attempt));
+      return readSharedBlessings(attempt + 1);
+    }
+    throw error;
   }
-  return response.json();
 }
 
 async function publishSharedBlessing(entry) {
@@ -215,7 +244,7 @@ async function publishSharedBlessing(entry) {
     `/rest/v1/${encodeURIComponent(sharedConfig.blessingsTable)}`,
     sharedConfig.supabaseUrl
   );
-  const request = createRequestTimeout(8_000);
+  const request = createRequestTimeout(22_000);
   const response = await fetch(endpoint, {
     method: "POST",
     headers: blessingHeaders({
@@ -223,6 +252,7 @@ async function publishSharedBlessing(entry) {
       Prefer: "return=representation"
     }),
     body: JSON.stringify(entry),
+    credentials: "omit",
     signal: request.signal
   }).finally(request.clear);
 
@@ -234,6 +264,17 @@ async function publishSharedBlessing(entry) {
   return rows[0] || entry;
 }
 
+function scheduleBlessingRetry(delay = 7_000) {
+  if (blessingRetryTimer) {
+    return;
+  }
+
+  blessingRetryTimer = window.setTimeout(() => {
+    blessingRetryTimer = null;
+    void loadBlessings();
+  }, delay);
+}
+
 async function loadBlessings() {
   if (blessingsLoading || !blessingList) {
     return;
@@ -243,17 +284,24 @@ async function loadBlessings() {
   blessingConnection.textContent = "正在看看月亮下面有什么…";
 
   try {
-    const remoteBlessings = hasSupabaseBlessingConfig()
-      ? await readSharedBlessings()
-      : [];
+    let remoteBlessings = [];
+    if (hasSupabaseBlessingConfig()) {
+      remoteBlessings = await readSharedBlessings();
+      cacheRemoteBlessings(remoteBlessings);
+    }
     visibleBlessings = mergeBlessings(remoteBlessings, getLocalBlessings());
     blessingConnection.textContent =
       remoteBlessings.length > 0
         ? "祝福来自所有打开这个页面的人"
         : "还没有人留言，第一句可以是你写的";
   } catch {
-    visibleBlessings = mergeBlessings(getLocalBlessings());
-    blessingConnection.textContent = "共享墙暂时没连上，先显示本机保存的祝福";
+    const cachedBlessings = getCachedRemoteBlessings();
+    visibleBlessings = mergeBlessings(cachedBlessings, getLocalBlessings());
+    blessingConnection.textContent =
+      cachedBlessings.length > 0
+        ? "网络有点慢，先显示最近一次同步到的祝福"
+        : "网络有点慢，正在自动重试连接";
+    scheduleBlessingRetry();
   } finally {
     blessingsLoading = false;
     renderBlessings();
@@ -314,6 +362,7 @@ async function handleBlessingSubmit(event) {
       visibleBlessings = mergeBlessings([publishedEntry], visibleBlessings);
       blessingConnection.textContent = "祝福来自所有打开这个页面的人";
       setBlessingStatus("写好了，朋友的祝福墙已经多了一句。");
+      void loadBlessings();
     } else {
       saveLocalBlessing(localEntry);
       visibleBlessings = mergeBlessings([localEntry], visibleBlessings);
